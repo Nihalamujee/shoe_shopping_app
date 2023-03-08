@@ -1,0 +1,19 @@
+.carousel-indicators
+{
+    object-fit:cover;
+    object-position:top;
+    height:20vh;
+    overflow:hidden;
+}
+
+
+
+.carousel-item active
+{
+      object-fit:cover;
+    object-position:top;
+    height:20vh;
+    overflow:hidden;
+}
+
+

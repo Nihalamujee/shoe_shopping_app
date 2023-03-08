@@ -1,0 +1,180 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  </head>
+  <body class="bg-dark">
+
+  {% extends 'Shop/layouts/main.html' %}
+  {% block title %}
+  Home | ShoeBox
+  {% endblock title %}
+
+  {% block content %}
+  {% include 'Shop/inc/slider.html' %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'home' %}">ShoeBox</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link" aria-current="page" href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a>
+          {% if request.user.is_authenticated %}
+            <a class="nav-link" aria-current="page" href="#"><i class="fa fa-user"></i> {{request.user}}</a>
+            <a class="nav-link" aria-current="page" href="{% url 'logout' %}"><i class="fa fa-signout"></i> Logout</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a>
+            <a class="nav-link" href="{% url 'register' %}"><i class="fa fa-users"></i> Register</a>
+          {% endif %}
+            <a class="nav-link" href="{% url 'collections' %}"><i class="fa fa-cubes"></i> Collections</a>
+            <a class="nav-link" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a class="nav-link" href="{% url 'favviewpage' %}"><i class="fa fa-heart"></i> Favourite</a>
+             <a class="nav-link" href="{% url 'my_login' %}"><i class="fa fa-sign-in"></i> Admin</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="bg-dark py-4 my-5">
+      <div class="container" style="margin-top:70px;">
+          <div class="row">
+            <div class="col-12 text-light">
+              <h1>Latest Trending Products</h1>
+            </div>
+            {% for item in products %}
+              <div class="col-md-4 col-lg-3">
+                <div class="card my-3">
+                  <img src="{{item.product_image.url}}" height="150px" width="150px" class="cars-image-top" alt="Brands">
+
+                  <a href="{% url 'product_details' item.brand.name item.name %}">
+                  <div class="card-body">
+                    <h5 class="card-title text-dark">{{item.name}}</h5>
+                      <h6 class="float-start category">{{item.category}}</h6>
+                    <span class="float-end new_price">Rs.{{ item.price | stringformat:'d'}}</span>
+
+
+                  </div>
+                   </a>
+                </div>
+              </div>
+
+            {% endfor %}
+
+          </div>
+
+      </div>
+  </section>
+
+{% load static %}
+
+
+
+
+  <section class="about" id="about">
+    <h1 class="heading"><span>about</span> us </h1>
+    <div class="row">
+
+
+      <div class="content text-light text-center font-size:4rem ">
+        <h3>What Makes our Products Special</h3>
+          <div class="content">
+            <h4>Meet ShoeBox</h4>
+              <p>        New Year, New Shoes!</p>
+                <p>The latest addition to our girls and boys gang!</p>
+                <p>ShoeBox has everything you could ever want in heel.
+                Search For Branded Shoes at ShoeBox.com. </p><p>Find Branded Shoes. Now with us with less price!</p>
+                <p>Get More designs and selection. Latest Today. Find it Here. Relevant Results. Fast Response. Search Now.</p>
+              </p>
+          </div>
+
+      </div>
+      <div class="image">
+        <img src="{% static 'images/Mr_Reseller.jpg' %}" height="700px" width="1300px" alt="">
+      </div>
+    </div>
+  </section>
+
+
+  <section class="bg-dark py-4 my-5">
+      <div class="container" style="margin-top:70px;">
+          <div class="row">
+            <div class="col-12 text-light text-center">
+              <h1>Customer Review</h1>
+            </div>
+
+              <div class="col-md-4 col-lg-3">
+                <div class="card my-3">
+                  <img src="{% static 'images/Morningstar 2k _ Watch me on We Heart It.jpg' %}" height="200px" width="260px" class="cars-image-top" alt="Brands">
+
+                  <div class="card-body bg-dark">
+                    <h1 class="name text-light">Maria jos</h1>
+                    <span class="review text-light"><p>Everything went really well with the ordering process.</p><p> Very fast shipping speed. Highly recommend them. Thanks</p></span>
+
+                  </div>
+                </div>
+              </div>
+
+
+
+            <div class="col-md-4 col-lg-3">
+                <div class="card my-3">
+                  <img src="{% static 'images/Download premium image of Cheerful African.jpg' %}" height="200px" width="260px" class="cars-image-top" alt="Brands">
+
+                  <div class="card-body bg-dark">
+                    <h1 class="name text-light">Josh</h1>
+
+                    <span class="review text-light"><p>Every purchase I have made was handled and shipped quickly.</p><p>They are constantly changing their promotions </p></span>
+
+                  </div>
+                </div>
+              </div>
+
+
+            <div class="col-md-4 col-lg-3">
+                <div class="card my-3">
+                  <img src="{% static 'images/Tantalizing Tuesdays_  Josh Holloway.jpg' %}" height="200px" width="260px" class="cars-image-top" alt="Brands">
+
+                  <div class="card-body bg-dark">
+                    <h1 class="name text-light">David paul</h1>
+
+                    <span class="review text-light"><p> I placed an order and received exactly what i wanted in a reasonable amount of time.</p><p> Very Happy </p></span>
+
+                  </div>
+                </div>
+              </div>
+
+
+
+            <div class="col-md-4 col-lg-3">
+                <div class="card my-3">
+                  <img src="{% static 'images/photo4.jpg' %}" height="200px" width="260px" class="cars-image-top" alt="Brands">
+
+                  <div class="card-body bg-dark">
+                    <h1 class="name text-light">Dashy</h1>
+
+                    <span class="review text-light"><p>Shoes arrived in four days. Also got branded products in 20% discount. Thanks </p><p> Happy</p></span>
+
+                  </div>
+                </div>
+              </div>
+
+
+          </div>
+
+      </div>
+  </section>
+
+  {% endblock content %}
+
+
+
+  </body>
+</html>

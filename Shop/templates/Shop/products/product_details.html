@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+
+  </head>
+  <body>
+
+  {% extends 'Shop/layouts/main.html' %}
+  {% block title %}
+  Home | ShoeBox
+  {% endblock title %}
+
+  {% block content %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'home' %}">ShoeBox</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link" aria-current="page" href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a>
+          {% if request.user.is_authenticated %}
+            <a class="nav-link" aria-current="page" href="#"><i class="fa fa-user"></i> {{request.user}}</a>
+            <a class="nav-link" aria-current="page" href="{% url 'logout' %}"><i class="fa fa-signout"></i> Logout</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a>
+            <a class="nav-link" href="{% url 'register' %}"><i class="fa fa-users"></i> Register</a>
+          {% endif %}
+            <a class="nav-link" href="{% url 'collections' %}"><i class="fa fa-cubes"></i> Collections</a>
+            <a class="nav-link" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a class="nav-link" href="{% url 'favviewpage' %}"><i class="fa fa-heart"></i> Favourite</a>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <section class="bg-light py-4 my-5" style="min-height:600px;">
+      <div class="container">
+          <div class="row">
+              <div class="col-12">
+                  <h4 class="text-dark mb-3">{{products}} Details</h4>
+                  <hr style="border-color:#b8bfc2;">
+                  <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                          <li class="breadcrumb-item"><a href="{% url 'collections' products.brand.name %}">Collections</a></li>
+                          <li class="breadcrumb-item active" aria-current="page">{{products}}</li>
+                      </ol>
+                  </nav>
+                  {% include 'Shop/inc/message.html' %}
+              </div>
+              <div class="col-4 my-3 pic-box">
+                {% if products.trending > 0 %}
+                  <div class="trending">Trending</div>
+                {% endif %}
+                  <img src="{{products.product_image.url}}" height="300px" width="300px" class="card-image-top " alt="{{products}}">
+              </div>
+
+              <div class="col-8 my-3">
+                  <h5 class="text-success">{{products | upper}}</h5>
+                  <p>{{products.vendor}}</p>
+                  <p>{{products.description}}</p>
+                  <p>{{products.category}}</p>
+                  <h6 class="my-2 text-danger"> Price : Rs.{{products.price}}</h6>
+
+                  <div class="my-3">
+                      {% if products.quantity > 0 %}
+                      <input type="hidden" value="{{products.id}}" id="pid">
+                         {% csrf_token %}
+
+                          <p>
+                              <div class="input-group" style="width:150px">
+                                <button class="input-group-text bg-success text-light" id="btnMinus"><i class="fa fa-minus"></i> </button>
+                                  <input type="text" name="qty" id="txtQty" value="1" class="form-control text-center">
+                                <button class="input-group-text bg-success text-light" id="btnPlus"><i class="fa fa-plus"></i></button>
+
+
+                              </div>
+                          </p>
+                          <button class="btn btn-primary" id="btnCart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
+                          {% else %}
+                          <button class="btn btn-primary"><i class="fa fa-minus"></i>Out of Stock</button>
+                          {% endif %}
+                          <button class="btn btn-danger" id="btnFav"><i class="fa fa-heart"></i></button>
+                   
+              </div>
+
+
+          </div>
+      </div>
+  </section>
+ <script>
+ document.addEventListener("DOMContentLoaded", function(event){
+   const btnPlus=document.getElementById("btnPlus");
+   const btnMinus=document.getElementById("btnMinus");
+   const txtQty=document.getElementById("txtQty");
+   const pid=document.getElementById("pid");
+   const tkn=document.querySelector('[name="csrfmiddlewaretoken"]').value;
+   const btnCart=document.getElementById("btnCart");
+   const btnFav=document.getElementById("btnFav");
+
+
+   btnPlus.addEventListener("click",function() {
+          let qty=parseInt(txtQty.value,10);
+          qty=isNaN(qty)?0:qty;
+          if(qty<10){
+            qty++;
+            txtQty.value=qty;
+          }
+          });
+
+   btnMinus.addEventListener("click",function() {
+          let qty=parseInt(txtQty.value,10);
+          qty=isNaN(qty)?0:qty;
+          if(qty>1){
+            qty--;
+            txtQty.value=qty;
+          }
+          });
+
+    btnCart.addEventListener("click",function() {
+          let qty=parseInt(txtQty.value,10);
+          qty=isNaN(qty)?0:qty;
+          if(qty>0){
+            let postObj={
+                product_qty:qty,
+                pid:pid.value,
+
+            }
+
+            fetch("/addtocart",{
+              method:'POST',
+              credentials:'same-origin',
+            headers:{
+                'Accept':'application/json',
+                'X-Requested-With':'XMLHttpRequest',
+                'X-CSRFToken':'{{ csrf_token }}',
+              },
+              body: JSON.stringify(postObj)
+            }).then(response => {
+              return response.json();
+            }).then(data => {
+              alert(data['status']);
+            });
+
+          }else{
+          alert("please Enter The Quantity");
+          }
+
+
+          });
+
+
+
+
+
+
+
+
+
+    btnFav.addEventListener("click",function() {
+
+            let postObj={
+                pid:pid.value,
+
+            }
+
+            fetch("/fav",{
+              method:'POST',
+              credentials:'same-origin',
+            headers:{
+                'Accept':'application/json',
+                'X-Requested-With':'XMLHttpRequest',
+                'X-CSRFToken':'{{ csrf_token }}',
+              },
+              body: JSON.stringify(postObj)
+            }).then(response => {
+              return response.json();
+            }).then(data => {
+              alert(data['status']);
+            });
+
+
+
+
+          });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ });
+ </script>
+  {% endblock content %}
+
+  </body>
+</html>
